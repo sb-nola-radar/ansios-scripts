@@ -1,0 +1,43 @@
+# Install Apache & PHP
+---
+- hosts: localhost
+#  user: root
+  become: yes
+  become_method: sudo
+  tasks:
+      # Install apache, update_cache is like running `apt-get update`
+    - name: Install Apache2
+      apt: name=apache2 state=latest update_cache=yes
+ 
+      # Install PHP5
+    - name: Install PHP 5
+      apt: name={{ item }} state=latest
+      with_items:
+        - php5
+        - php5-cgi
+        - php5-cli
+        - php5-curl
+        - php5-json
+        - php5-odbc
+        - php5-tidy
+        - php5-common
+        - php5-sqlite
+        - php5-xmlrpc
+ 
+      # Install MySQL, python-mysqldb is required by ansible for use of the
+      # MySQL modules
+    - name: Install MySQL
+      apt: name={{ item }} state=latest
+      with_items:
+        - php5-mysql
+        - mysql-server
+        - python-mysqldb
+        - libapache2-mod-auth-mysql
+ 
+      # Start MySQL
+    - name: Start MySQL
+      service: name=mysql state=started
+ 
+      # Start Apache2
+    - name: Start apache2
+      service: name=apache2 state=started
