@@ -1,0 +1,13 @@
+# Test for GitHub Code pushes.
+- hosts: test
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: code push
+      git: repo=https://github.com/nola-radar/nofuckstogive.today.git 
+           dest='/var/www/test'
+    - name: www-data permissions
+      action: file path=/var/www/test owner=www-data group=www-data recurse=yes
+    - name: restart apache2
+      action:  service name=apache2 state=restarted
